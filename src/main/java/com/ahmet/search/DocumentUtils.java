@@ -1,18 +1,27 @@
 package com.ahmet.search;
 
 import com.ahmet.model.DocumentTf;
+import com.ahmet.model.Result;
+import com.ahmet.model.Task;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 
 public interface DocumentUtils {
 
-    static DocumentTf createDocumentTf(List<String> terms, List<String> words) {
+    static List<String> readDocumentsList(String directory) {
+        File books = new File(directory);
+        return Arrays.stream(Objects.requireNonNull(books.list()))
+                     .map(docName -> directory + "/" + docName)
+                     .toList();
+    }
+
+    private static DocumentTf createDocumentTf(List<String> terms, List<String> words) {
         DocumentTf documentTf = new DocumentTf();
         terms.forEach(term -> {
             double tf = TFIDFCalculator.calculateTf(term, words);
@@ -21,14 +30,14 @@ public interface DocumentUtils {
         return documentTf;
     }
 
-    static Map<String, DocumentTf> prepareDocToDocumentTf(List<String> terms, List<String> docNames) throws FileNotFoundException {
-        Map<String, DocumentTf> docToDocumentTf = new HashMap<>();
-        for (String docName: docNames) {
+    static Result prepareDocToDocumentTf(Task task) throws FileNotFoundException {
+        Result result = new Result();
+        for (String docName: task.getDocumentNames()) {
             List<String> wordsInDoc = wordsInDocument(docName);
-            DocumentTf documentTf = createDocumentTf(terms, wordsInDoc);
-            docToDocumentTf.put(docName, documentTf);
+            DocumentTf documentTf = createDocumentTf(task.getSearchTerms(), wordsInDoc);
+            result.addDocumentTf(docName, documentTf);
         }
-        return docToDocumentTf;
+        return result;
     }
 
     private static List<String> wordsInDocument(String docName) throws FileNotFoundException {

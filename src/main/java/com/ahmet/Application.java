@@ -26,16 +26,21 @@ public class Application implements Watcher {
         Application application = new Application();
         ZooKeeper zooKeeper = application.connectToZookeeper();
 
-        ServiceRegistry serviceRegistry = new ServiceRegistry(zooKeeper, ServiceRegistry.SERVICE_REGISTRY_ZNODE);
-        OnElectionAction onElectionAction = new OnElectionAction(serviceRegistry, currentNodePort);
-
-        LeaderElection leaderElection = new LeaderElection(zooKeeper, onElectionAction);
-        leaderElection.volunteerForLeadership();
-        leaderElection.electLeader();
+        createAndStartLeaderElectionService(zooKeeper, currentNodePort);
 
         application.run();
         application.close();
         logger.warn("Disconnected from Zookeeper server, existing application");
+    }
+
+    private static void createAndStartLeaderElectionService(ZooKeeper zooKeeper, int currentNodePort) throws InterruptedException, KeeperException {
+        ServiceRegistry workersServiceRegistry = new ServiceRegistry(zooKeeper, ServiceRegistry.SERVICE_REGISTRY_ZNODE);
+        ServiceRegistry coordinatorsServiceRegistry = new ServiceRegistry(zooKeeper, ServiceRegistry.COORDINATION_SERVICE_ZNODE);
+        OnElectionAction onElectionAction = new OnElectionAction(workersServiceRegistry, coordinatorsServiceRegistry, currentNodePort);
+
+        LeaderElection leaderElection = new LeaderElection(zooKeeper, onElectionAction);
+        leaderElection.volunteerForLeadership();
+        leaderElection.electLeader();
     }
 
     private ZooKeeper connectToZookeeper() throws IOException {

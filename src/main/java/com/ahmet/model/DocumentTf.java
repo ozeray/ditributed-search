@@ -1,9 +1,10 @@
 package com.ahmet.model;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DocumentTf {
+public class DocumentTf implements Serializable {
 
     private final Map<String, Double> map = new HashMap<>();
 

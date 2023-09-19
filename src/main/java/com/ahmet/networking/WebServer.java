@@ -16,8 +16,8 @@ public class WebServer {
     private final Logger logger;
     private static final String STATUS_ENDPOINT = "/status";
     private final int port;
-    private HttpServer httpServer;
     private final OnRequestCallback onRequestCallback;
+    private HttpServer httpServer;
 
     public WebServer(int port, OnRequestCallback onRequestCallback) {
         this.port = port;
@@ -25,10 +25,13 @@ public class WebServer {
         this.logger = LoggerFactory.getLogger(WebServer.class);
     }
 
-    public void startServer() {
+    public void startServer() throws IOException {
         try {
             httpServer = HttpServer.create(new InetSocketAddress(port), 0);
-        } catch (IOException e) {e.printStackTrace();}
+        } catch (IOException e) {
+            logger.error("Failed to start server. Exiting the application...", e);
+            throw e;
+        }
 
         HttpContext statusContext = httpServer.createContext(STATUS_ENDPOINT);
         statusContext.setHandler(this::handleStatusCheckRequest);
@@ -67,5 +70,9 @@ public class WebServer {
         outputStream.write(responseBytes);
         outputStream.flush();
         outputStream.close();
+    }
+
+    public void stop() {
+        httpServer.stop(0);
     }
 }
