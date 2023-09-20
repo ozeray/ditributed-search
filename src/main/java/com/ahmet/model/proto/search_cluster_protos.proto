@@ -1,0 +1,29 @@
+// Run: protoc --java_out=src/main/java/com/ahmet src/main/java/com/ahmet/model/proto/search_cluster_protos.proto to generate Java class
+
+syntax = "proto2";
+
+// Avoid name collisions with other proto definitions
+package distributed.search;
+
+// Java package to create
+option java_package = "com.ahmet.model.proto";
+
+// Java class to create
+option java_outer_classname = "SearchModel";
+
+// Request from frontend to search coordinator
+message Request {
+  required string search_query = 1;
+}
+
+// Response from search coordinator to frontend
+message Response {
+  repeated DocumentStats relevant_documents = 1;
+
+  message DocumentStats {
+    required string document_name = 1;
+    optional double score = 2;
+    optional int64 document_size = 3;
+    optional string author = 4;
+  }
+}

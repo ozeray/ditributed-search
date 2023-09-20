@@ -29,12 +29,12 @@ public interface TFIDFCalculator {
         return terms.stream().mapToDouble(term -> calculateTermScorePerDocument(term, docToDocumentTf, docName)).sum();
     }
 
-    static TreeMap<Double, String> calculateScoresSorted(List<String> terms, Map<String, DocumentTf> docToDocumentTf) {
+    static Map<Double, String> calculateScoresSorted(List<String> terms, Map<String, DocumentTf> docToDocumentTf) {
         TreeMap<Double, String> scoreToDocName = new TreeMap<>();
         docToDocumentTf.keySet().forEach(docName -> {
             double docScore = calculateTotalScorePerDocument(terms, docToDocumentTf, docName);
             scoreToDocName.put(docScore, docName);
         });
-        return scoreToDocName;
+        return scoreToDocName.descendingMap();
     }
 }
