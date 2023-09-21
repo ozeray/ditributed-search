@@ -133,7 +133,7 @@ public class SearchCoordinator implements OnRequestCallback {
 
         for (int i = 0; i < numberOfWorkers; i++) {
             int firstDocIndex = i * numberOfDocumentsPerWorker;
-            int lastDocIndexExclusive = Math.min(firstDocIndex + numberOfWorkers, documents.size());
+            int lastDocIndexExclusive = Math.min(firstDocIndex + numberOfDocumentsPerWorker, documents.size());
             if (firstDocIndex >= lastDocIndexExclusive) {
                 break;
             }
