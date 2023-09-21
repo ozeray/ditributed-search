@@ -11,8 +11,8 @@ import java.util.List;
 
 public class ServiceRegistry implements Watcher {
 
-    public static final String SERVICE_REGISTRY_ZNODE = "/service_registry";
-    public static final String COORDINATION_SERVICE_ZNODE = "/coordination_service";
+    public static final String WORKERS_SERVICE_REGISTRY = "/workers_service_registry";
+    public static final String COORDINATORS_SERVICE_REGISTRY = "/coordinators_service_registry";
     private final ZooKeeper zooKeeper;
     private final Logger logger;
     private String currentZnode;
@@ -53,7 +53,7 @@ public class ServiceRegistry implements Watcher {
                 zooKeeper.delete(currentZnode, -1);
             }
         } catch (KeeperException | InterruptedException e) {
-            logger.error("Exception occured", e);
+            logger.error("Exception occurred", e);
         }
     }
 

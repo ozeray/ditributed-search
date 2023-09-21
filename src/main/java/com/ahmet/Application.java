@@ -34,8 +34,8 @@ public class Application implements Watcher {
     }
 
     private static void createAndStartLeaderElectionService(ZooKeeper zooKeeper, int currentNodePort) throws InterruptedException, KeeperException {
-        ServiceRegistry workersServiceRegistry = new ServiceRegistry(zooKeeper, ServiceRegistry.SERVICE_REGISTRY_ZNODE);
-        ServiceRegistry coordinatorsServiceRegistry = new ServiceRegistry(zooKeeper, ServiceRegistry.COORDINATION_SERVICE_ZNODE);
+        ServiceRegistry workersServiceRegistry = new ServiceRegistry(zooKeeper, ServiceRegistry.WORKERS_SERVICE_REGISTRY);
+        ServiceRegistry coordinatorsServiceRegistry = new ServiceRegistry(zooKeeper, ServiceRegistry.COORDINATORS_SERVICE_REGISTRY);
         OnElectionAction onElectionAction = new OnElectionAction(workersServiceRegistry, coordinatorsServiceRegistry, currentNodePort);
 
         LeaderElection leaderElection = new LeaderElection(zooKeeper, onElectionAction);
