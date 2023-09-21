@@ -30,11 +30,11 @@ public class OnElectionAction implements OnElectionCallback {
         workersServiceRegistry.unregisterFromCluster();
         workersServiceRegistry.registerForUpdates();
 
-        SearchCoordinator searchCoordinator = new SearchCoordinator(workersServiceRegistry, new WorkerClient());
         if (webServer != null) {
             webServer.stop();
         }
 
+        SearchCoordinator searchCoordinator = new SearchCoordinator(workersServiceRegistry, new WorkerClient());
         webServer = new WebServer(port, searchCoordinator);
         try {
             webServer.startServer();
