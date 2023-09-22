@@ -14,14 +14,16 @@ import java.util.Objects;
 
 public class Application implements Watcher {
     private static Logger logger;
-    private static final String ZOOKEEPER_ADDRESS = "localhost:2181";
+    private static String zookeeperAddress;
     private static final int SESSION_TIMEOUT = 3000;
-    private static final int DEFAULT_PORT = 8080;
+    private static final int DEFAULT_PORT = 8081;
     private ZooKeeper zooKeeper;
 
     public static void main(String[] args) throws IOException, InterruptedException, KeeperException {
         logger = LoggerFactory.getLogger(Application.class);
-        int currentNodePort = args.length == 1 ? Integer.parseInt(args[0]) : DEFAULT_PORT;
+        int currentNodePort = args.length > 0 ? Integer.parseInt(args[0]) : DEFAULT_PORT;
+        String localhostAddress = args.length > 1 && "docker".equals(args[1]) ? "host.docker.internal" : "localhost";
+        zookeeperAddress = localhostAddress + ":2181";
 
         Application application = new Application();
         ZooKeeper zooKeeper = application.connectToZookeeper();
@@ -44,7 +46,7 @@ public class Application implements Watcher {
     }
 
     private ZooKeeper connectToZookeeper() throws IOException {
-        this.zooKeeper = new ZooKeeper(ZOOKEEPER_ADDRESS, SESSION_TIMEOUT, this);
+        this.zooKeeper = new ZooKeeper(zookeeperAddress, SESSION_TIMEOUT, this);
         return zooKeeper;
     }
 
